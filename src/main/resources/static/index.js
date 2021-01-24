@@ -1,19 +1,29 @@
-angular.module('app', ['angularUtils.directives.dirPagination']).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8189/market';
+angular.module('app', []).controller('indexController', function ($scope, $http) {
+    const contextPath = 'http://localhost:8189/market/api/v1';
 
 
-    $scope.fillTable = function () {
+    $scope.fillTable = function (pageIndex = 1) {
         $http({
             url: contextPath + '/products',
             method: 'GET',
             params: {
                 min_cost: $scope.filter ? $scope.filter.min_cost : null,
-                max_cost: $scope.filter ? $scope.filter.max_cost : null
+                max_cost: $scope.filter ? $scope.filter.max_cost : null,
+                p: pageIndex
             }
         }).then(function (response) {
-            $scope.ProductsList = response.data;
+            $scope.ProductsPage = response.data;
+            $scope.PaginationArray=$scope.generatePagesIndexes(1,$scope.ProductsPage.totalPages)
         });
     };
+
+    $scope.generatePagesIndexes = function (startPage,endPage){
+        let arr = [];
+        for (let i =startPage; i < endPage+1; i++){
+            arr.push(i);
+        }
+        return arr;
+    }
 
     $scope.submitCreateNewProduct = function () {
         $http.post(contextPath + '/products', $scope.newProduct)
@@ -23,19 +33,13 @@ angular.module('app', ['angularUtils.directives.dirPagination']).controller('ind
             });
     };
 
-    $scope.sort = function (keyname) {
-        $scope.sortKey = keyname;   //set the sortKey to the param passed
-        $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-    };
 
-    $scope.deleteProductById = function (p) {
-        $http({
-            method: 'GET',
-            url: contextPath + '/products/delete/' + p
-        }).then(function () {
-            $scope.fillTable();
-        });
-    };
+    $scope.deleteProductById = function (productId) {
+        $http.delete(contextPath + '/products/' + productId)
+            .then(function (response) {
+                $scope.fillTable();
+            });
+    }
 
     $scope.fillTable();
 });

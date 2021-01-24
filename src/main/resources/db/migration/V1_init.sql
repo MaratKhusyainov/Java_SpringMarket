@@ -4,6 +4,8 @@ CREATE TABLE `products_table`
     `product_id` bigint(15) NOT NULL AUTO_INCREMENT,
     `title_fld`  varchar(255) NOT NULL,
     `cost_fld`   int(11) DEFAULT NULL,
+    `created_at` timestamp default current_timestamp,
+    `updated_at` timestamp default current_timestamp,
     PRIMARY KEY (`product_id`)
 ) ;
 insert into products_table (title_fld, cost_fld) values ('Product 1', 100),
