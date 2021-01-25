@@ -1,14 +1,15 @@
 package geekbrains.Service;
 
+import geekbrains.Entity.Product;
 import org.springframework.data.domain.Page;
 import geekbrains.Dto.ProductDto;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
-    public List<ProductDto> getAllProducts();
-    public ProductDto findProductById(Long id);
-    public ProductDto saveOrUpdate(ProductDto product);
-    public void deleteProductById(Long id);
-    public Page<ProductDto> findAll(int page);
+    Optional<ProductDto> findProductById(Long id);
+    ProductDto saveOrUpdate(ProductDto product);
+    void deleteProductById(Long id);
+    Page<ProductDto> findAll(Specification<Product> spec, int page, int pageSize);
 }
