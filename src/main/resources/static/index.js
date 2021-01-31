@@ -51,55 +51,46 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             });
     }
 
-    $scope.deleteCartProductById = function (productId) {
-        $http.delete(contextPath + '/cart/product/' + productId)
+    $scope.deleteCartProductById = function (title) {
+        let pos = $scope.Cart.items.map(function (e) {
+            return e.productTitle;
+        }).indexOf(title);
+        $http.get(contextPath + '/cart/product/' + pos)
             .then(function (response) {
-                $scope.fillCart();
+                $scope.showCart();
             });
     }
 
-
-    $scope.addToCartProductById = function (product, id) {
-        let p = $scope.CartProductsList.findIndex(item => item.id === id);
-        if (p === -1) {
-            $http.post(contextPath + '/cart/product', product)
-                .then(function (response) {
-                    $scope.fillCart();
-                });
-        }
-    }
-
-
-    $scope.increaseProductInCart = function (id) {
-        $scope.updateCountProductById(id, 1)
-    }
-    $scope.reduceProductInCart = function (id) {
-        $scope.updateCountProductById(id, -1)
-    }
-
-
-    $scope.updateCountProductById = function (id, number) {
-        let p = $scope.CartProductsList.findIndex(item => item.id === id);
-        $http.put(contextPath + '/cart/' + p + "/" + number)
+    $scope.addToCart = function (id) {
+        $http.get(contextPath + '/cart/add/' + id)
             .then(function (response) {
-                $scope.fillCart();
+                $scope.showCart();
+            });
+    }
+
+    $scope.clearCart = function () {
+        $http.get(contextPath + '/cart/clear')
+            .then(function (response) {
+                $scope.showCart();
+            });
+    }
+
+    $scope.updateQuantity = function (title, i) {
+        let pos = $scope.Cart.items.map(function (e) {
+            return e.productTitle;
+        }).indexOf(title);
+        $http.get(contextPath + '/cart/change quantity/' + pos + '/' + i)
+            .then(function (response) {
+                $scope.showCart();
             });
     };
 
-    $scope.fillCart = function () {
+    $scope.showCart = function () {
         $http.get(contextPath + '/cart').then(function (response) {
-            $scope.CartProductsList = response.data;
-            document.getElementById("sum").value = $scope.CartProductsList.sum("cost");
+            $scope.Cart = response.data;
         });
     };
 
-    Array.prototype.sum = function (prop) {
-        var total = 0
-        for (var i = 0, _len = this.length; i < _len; i++) {
-            total += this[i][prop]
-        }
-        return total
-    }
-    $scope.fillCart();
+    $scope.showCart();
     $scope.fillTable();
 });

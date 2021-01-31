@@ -44,7 +44,8 @@
         <tr>
             <td>Название</td>
             <td>Цена</td>
-            <td align="centre">Действия</td>
+            <td></td>
+            <td></td>
         </tr>
         </thead>
         <tbody>
@@ -53,7 +54,7 @@
             <td>{{p.cost}}</td>
             <td>
                 <button class="btn btn-danger" ng-click="deleteProductById(p.id)">Удалить товар</button>
-                <button type="button" class="btn btn-primary" ng-click="addToCartProductById(p,p.id)">
+                <button type="button" class="btn btn-primary" ng-click="addToCart(p.id)">
                     <span class="glyphicon glyphicon-shopping-cart"></span>
                 </button>
             </td>
@@ -63,19 +64,63 @@
 
     <nav aria-label="Page navigation">
         <ul class="pagination">
-            <li ng-class="ProductsPage.first?'page-item disabled':'page-item'">
+            <li ng-hide="ProductsPage.first">
                 <a class="page-link" ng-click="fillTable(ProductsPage.number)">Пред.</a>
             </li>
             <li ng-class="ProductsPage.number == pageIndex -1?'page-item active' : 'page-item'"
                 ng-repeat="pageIndex in PaginationArray">
                 <a class="page-link" ng-click="fillTable(pageIndex)">{{pageIndex}}</a>
             </li>
-            <li ng-class="ProductsPage.last?'page-item disabled':'page-item'">
+            <li ng-hide="ProductsPage.last">
                 <a class="page-link" ng-click="fillTable(ProductsPage.number + 2)">След.</a>
             </li>
         </ul>
     </nav>
-
+    <div ng-hide='Cart.items.length > 0'>
+        <h3>Корзина пуста</h3>
+        <br>
+    </div>
+    <div ng-show='Cart.items.length > 0'>
+        <h3>Корзина</h3>
+        <table class="table table-hover" cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <td>Название</td>
+                <td>Количество</td>
+                <td>Цена</td>
+                <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="oi in Cart.items">
+                <td>{{oi.productTitle}}</td>
+                <td>
+                    <button  type="button" class="btn btn-primary"
+                             ng-click="updateQuantity(oi.productTitle,-1)">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                    {{oi.quantity}}
+                    <button type="button" class="btn btn-primary" ng-click="updateQuantity(oi.productTitle,1)">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </td>
+                <td>{{oi.quantity + ' x ' + oi.pricePerProduct + ' = ' + oi.price}}</td>
+                <td>
+                    <button class="btn btn-danger" ng-click="deleteCartProductById(oi.productTitle)">
+                        <span class="glyphicon glyphicon-trash"></span></button>
+                </td>
+            </tr>
+            <tr>
+                <td>Итого</td>
+                <td></td>
+                <td>{{Cart.totalPrice}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-show='Cart.items.length > 0'>
+        <button class="btn btn-danger" ng-click="clearCart()">Очистить корзину</button>
+    </div>
     <h3>Добавить новый товар</h3>
     <form novalidate ng-submit="submitCreateNewProduct()">
         <div class="form-group col-md-6">
@@ -91,47 +136,6 @@
         </div>
     </form>
     <hr>
-
-    <h3>Товары в корзине</h3>
-    <table class="table table-hover" cellpadding="0" cellspacing="0">
-        <thead>
-        <tr>
-            <td>Название</td>
-            <td>Количество</td>
-            <td>Цена</td>
-            <td>Действия</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="p in CartProductsList">
-            <td>{{p.title}}</td>
-            <td ng-class="p.count == 1?'page-item disabled' : 'page-item'">
-                <button ng-class="p.count == 1?'page-item disabled' : 'page-item'" type="button" class="btn btn-primary"
-                        ng-click="reduceProductInCart(p.id)">
-                    <span class="glyphicon glyphicon-minus"></span>
-                </button>
-                <input type="text" value={{p.count}} size="1" readonly/>
-
-                <button type="button" class="btn btn-primary" ng-click="increaseProductInCart(p.id)">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </button>
-            </td>
-
-            <td>{{p.cost}}</td>
-            <td>
-                <button class="btn btn-danger" ng-click="deleteCartProductById(p.id)">
-                    <span class="glyphicon glyphicon-trash"></span></button>
-            </td>
-        </tr>
-
-
-        </tbody>
-
-    </table>
-    <h3>Cумма заказа:
-        <input id="sum" type="text" value="0" size="3" readonly/>
-    </h3>
-
 </div>
 </body>
 </html>

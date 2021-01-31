@@ -28,3 +28,13 @@ insert into products_table (title_fld, cost_fld) values ('Product 1', 100),
                                                         ('Product 18', 1800),
                                                         ('Product 19', 1900),
                                                         ('Product 20', 2000);
+
+CREATE TABLE order_items
+(
+    `id`       INT          NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `quantity` INT,
+    `price_per_product`    INT,
+    `price`    INT(11),
+    PRIMARY KEY (`id`)
+);

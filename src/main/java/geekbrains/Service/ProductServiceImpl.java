@@ -2,7 +2,6 @@ package geekbrains.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll().stream().map(ProductDto::new).collect(Collectors.toList());
     }
 
-    public Optional<ProductDto> findProductById(Long id) {
+    public Optional<ProductDto> findProductDtoById(Long id) {
         return productRepository.findById(id).map(ProductDto::new);
+    }
+    public Optional<Product> findProductById(Long id) {
+        return productRepository.findById(id);
     }
 
     public ProductDto saveOrUpdate(ProductDto productDto) {

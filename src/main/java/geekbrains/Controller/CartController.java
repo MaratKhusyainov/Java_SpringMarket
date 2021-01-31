@@ -1,35 +1,38 @@
 package geekbrains.Controller;
 
-import geekbrains.Dto.CartProductDto;
-import geekbrains.Service.CartService;
+import geekbrains.Beans.Cart;
+import geekbrains.Dto.CartDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/cart")
 @RequiredArgsConstructor
 public class CartController {
-    private final CartService cartService;
+    private final Cart cart;
 
     @GetMapping
-    public List<CartProductDto> findAllProducts(){
-        return cartService.get();
+    public CartDto getCart() {
+        return new CartDto(cart);
     }
 
-    @PostMapping("/product")
-    public void addProduct(@RequestBody CartProductDto p){
-        cartService.addProduct(p);
+    @GetMapping("/add/{id}")
+    public void addToCArt(@PathVariable Long id){
+        cart.addToCart(id);
+    }
+    @GetMapping("/clear")
+    public void addToCArt(){
+        cart.clear();
     }
 
-    @DeleteMapping("/product/{id}")
-    public void deleteProduct(@PathVariable Long id){
-        cartService.deleteProduct(id);
+    @GetMapping("/change quantity/{p}/{i}")
+    public void addToCArt(@PathVariable int p,@PathVariable int i){
+        cart.updateQuantity(p,i);
     }
 
-    @PutMapping("/{index}/{number}")
-    public void updateProduct(@PathVariable int index, @PathVariable String number) {
-        cartService.update(index,number);
+    @GetMapping("/product/{p}")
+    public void addToCArt(@PathVariable int p){
+        cart.deleteProduct(p);
     }
 }
