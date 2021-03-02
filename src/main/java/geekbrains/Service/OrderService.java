@@ -1,5 +1,7 @@
 package geekbrains.Service;
 
+import geekbrains.Beans.Cart;
+import geekbrains.Beans.OrderInfo;
 import geekbrains.Entity.Order;
 import geekbrains.Entity.OrderItem;
 import geekbrains.Entity.User;
@@ -14,16 +16,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final UserService userService;
+    private final Cart cart;
 
-    public List<OrderItem> save(String name, List<OrderItem> l){
-        User user =userService.findByUsername(name).get();
-        Order order = new Order();
-        order.setUser(user);
-        order.setOrderItems(l);
-        orderRepository.save(order);
-        return order.getOrderItems();
+    public Order createFromUserCart(User user, OrderInfo info) {
+        Order order = new Order(cart, user, info);
+        order = orderRepository.save(order);
+        cart.clear();
+        return order;
     }
 
+    public List<Order> findAllOrdersByOwnerName(String username) {
+        return orderRepository.findAllByOwnerUsername(username);
+    }
 
 }
