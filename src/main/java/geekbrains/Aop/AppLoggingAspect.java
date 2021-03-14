@@ -31,15 +31,15 @@ public class AppLoggingAspect {
         map = new HashMap<>();
     }
 
-    @Pointcut("execution(public * ru.geekbrains.market.beans.Cart.*(..))")
+    @Pointcut("execution(public * geekbrains.Beans.Cart*(..))")
     public void cartMethodTrackerPointcut() {
     }
 
-    @Pointcut("execution(public * ru.geekbrains.market.service.*.*(..))")
+    @Pointcut("execution(public * geekbrains.Service.*.*(..))")
     public void controllersMethodTrackerPointcut() {
     }
 
-    @Pointcut("execution(public * ru.geekbrains.market.repository.*.*(..))")
+    @Pointcut("execution(public * geekbrains.Repository.*.*(..))")
     public void repositoriesMethodTrackerPointcut() {
     }
 
@@ -59,7 +59,7 @@ public class AppLoggingAspect {
                 .ifPresent(w -> log.info("most usable method " + w.getKey() + " with count " + w.getValue()));
     }
 
-    @Around("execution(public * ru.geekbrains.market.controller.*.*(..))")
+    @Around("execution(public * geekbrains.Controller.*.*(..))")
     public Object methodProfiling(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long begin = System.currentTimeMillis();
         Object out = proceedingJoinPoint.proceed();
