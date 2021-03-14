@@ -1,0 +1,60 @@
+<h3>Фильтр</h3>
+<form novalidate ng-submit="showProductsPage()">
+    <div class="form-group row">
+        <div class="form-group col-md-3">
+            <label for="filterTitle">Название товара</label>
+            <input class="form-control" type="text" ng-model="filter.title" id="filterTitle">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="filterMinCost">Минимальная цена</label>
+            <input class="form-control" type="number" ng-model="filter.min_cost" id="filterMinCost">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="filterMaxCost">Максимальная цена</label>
+            <input class="form-control" type="number" ng-model="filter.max_cost" id="filterMaxCost">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-success" type="submit">Применить</button>
+    </div>
+</form>
+
+<h3>Список товаров</h3>
+<table class="table table-hover" cellpadding="0" cellspacing="0">
+    <thead>
+    <tr>
+        <td>Название</td>
+        <td>Цена</td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="p in ProductsPage.content">
+        <td>{{p.title}}</td>
+        <td>{{p.price}}</td>
+        <td>
+            <button type="button" class="btn btn-primary" ng-click="addToCart(p.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-basket-fill" viewBox="0 0 16 16">
+                    <path d="M5.071 1.243a.5.5 0 0 1 .858.514L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 6h1.717L5.07 1.243zM3.5 10.5a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3zm2.5 0a.5.5 0 1 0-1 0v3a.5.5 0 0 0 1 0v-3z"></path>
+                </svg>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li ng-hide="ProductsPage.first">
+            <a class="page-link" ng-click="showProductsPage(ProductsPage.number)">Пред.</a>
+        </li>
+        <li ng-class="ProductsPage.number == pageIndex -1?'page-item active' : 'page-item'"
+            ng-repeat="pageIndex in PaginationArray">
+            <a class="page-link" ng-click="showProductsPage(pageIndex)">{{pageIndex}}</a>
+        </li>
+        <li ng-hide="ProductsPage.last">
+            <a class="page-link" ng-click="showProductsPage(ProductsPage.number + 2)">След.</a>
+        </li>
+    </ul>
+</nav>

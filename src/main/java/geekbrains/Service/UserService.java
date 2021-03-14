@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +26,13 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final SecurityConfig securityConfig;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> findByUsernameAndEmail(String name,String email) {
+        return userRepository.findByUsernameAndEmail(name,email);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(User user) {
-        user.setPassword(securityConfig.passwordEncoder().encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         String roleName = "ROLE_USER";
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new ResourceNotFoundException("Unable to find role " + roleName + " add to user"));
         user.setRoles(List.of(role));

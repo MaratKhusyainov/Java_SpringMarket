@@ -2,6 +2,8 @@ package geekbrains.Controller;
 
 import geekbrains.Beans.Cart;
 import geekbrains.Beans.OrderInfo;
+import geekbrains.Dto.OrderDto;
+import geekbrains.Entity.Order;
 import geekbrains.Entity.OrderItem;
 import geekbrains.Entity.User;
 import geekbrains.Exception.ResourceNotFoundException;
@@ -25,16 +27,22 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrderFromCart(Principal principal, @RequestBody OrderInfo orderInfo) {
+    public OrderDto createOrderFromCart(Principal principal, @RequestBody OrderInfo orderInfo) {
         User user = userService.findByUsername(principal.getName()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        orderService.createFromUserCart(user, orderInfo);
+        Order order = orderService.createFromUserCart(user, orderInfo);
+        return new OrderDto(order);
+    }
+    @GetMapping("/{id}")
+    public OrderDto getOrderById(@PathVariable Long id) {
+        Order order = orderService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        return new OrderDto(order);
     }
 
     @GetMapping
-    public List<SpringDataJaxb.OrderDto> getCurrentUserOrders(Principal principal) {
-        return orderService.findAllOrdersByOwnerName(principal.getName()).stream().map(SpringDataJaxb.OrderDto::new).collect(Collectors.toList());
+    public List<OrderDto> getCurrentUserOrders(Principal principal) {
+        return orderService.findAllOrdersByOwnerName(principal.getName()).stream().map(OrderDto::new).collect(Collectors.toList());
     }
 
 }

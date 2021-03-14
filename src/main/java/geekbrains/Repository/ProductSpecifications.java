@@ -6,11 +6,11 @@ import org.springframework.util.MultiValueMap;
 
 public class ProductSpecifications {
     private static Specification<Product> priceGreaterOrEqualsThan(int minCost) {
-        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("cost"), minCost);
+        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minCost);
     }
 
     private static Specification<Product> priceLesserOrEqualsThan(int maxCost) {
-        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("cost"), maxCost);
+        return (Specification<Product>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxCost);
     }
 
     private static Specification<Product> titleLike(String titlePart) {
