@@ -1,5 +1,6 @@
 package geekbrains.Service;
 
+import geekbrains.Soap.Products;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +12,7 @@ import geekbrains.Repository.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,4 +54,22 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductDto> findAll(Specification<Product> spec,int page,int pageSize) {
         return productRepository.findAll(spec, PageRequest.of(page-1,pageSize)).map(ProductDto::new);
     }
+    public static final Function<Product, Product> functionEntityToSoap = se -> {
+        Product p = new Product();
+        p.setId(se.getId());
+        p.setTitle(se.getTitle());
+        p.setCost(se.getCost());
+        return p;
+    };
+
+    public List<geekbrains.Entity.Product> getAllProductsSoap() {
+        return productRepository.findAll().stream().map(functionEntityToSoap).collect(Collectors.toList());
+    }
+
+    public Products getById(Long id) {
+        return productRepository.findById(id).map(functionEntityToSoap).get();
+    }
+
+
+
 }
