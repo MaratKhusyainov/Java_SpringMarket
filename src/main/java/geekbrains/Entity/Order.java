@@ -1,10 +1,17 @@
 package geekbrains.Entity;
 
+import geekbrains.Beans.Cart;
+import geekbrains.Beans.OrderInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -14,17 +21,40 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToMany(mappedBy = "order")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<OrderItem> items;
 
-    @ManyToMany
-    @JoinTable(name = "items_orders",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_items_id"))
-    private List<OrderItem> orderItems;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Column(name = "price")
+    private int price;
+
+    @Column(name = "address")
+    private String address;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    public Order(Cart cart, User user, OrderInfo orderInfo) {
+        this.items = new ArrayList<>();
+        this.owner = user;
+        this.price = cart.getTotalPrice();
+        this.address=orderInfo.getAddress();
+        cart.getItems().stream().forEach((oi) -> {
+            oi.setOrder(this);
+            items.add(oi);
+        });
+    }
 
 }

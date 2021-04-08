@@ -1,14 +1,3 @@
-CREATE TABLE order_items
-(
-    `id`       INT          NOT NULL AUTO_INCREMENT,
-    `product_id` bigint(15) NOT NULL,
-    `quantity` INT,
-    `price_per_product`    INT,
-    `price`    INT(11),
-    PRIMARY KEY (`id`)
-);
-
-
 create table users (
                        id                      INT NOT NULL AUTO_INCREMENT,
                        username                varchar(255) not null unique,
@@ -27,20 +16,6 @@ create table roles (
                        primary key (id)
 );
 
-create table orders (
-                        order_id                      int NOT NULL AUTO_INCREMENT,
-                        user_id                       int NOT NULL references users (id),
-
-                        primary key (order_id)
-);
-
-
-create table items_orders (
-                              order_id                      int NOT NULL references orders (order_id),
-                              order_items_id                int NOT NULL references order_items (id)
-);
-
-
 CREATE TABLE users_roles (
                              user_id           int not null references users (id),
                              role_id           int not null references roles (id),
@@ -54,15 +29,15 @@ values
 
 insert into users (username, password, email)
 values
-('bob', '$2y$12$t1iQr7DnYBeDxGbRKlAUyOW.6HlPbnvYuK5hJU3g/xp1lkh4Mrvq.', 'bob_johnson@gmail.com'),
-('john', '$2y$12$t1iQr7DnYBeDxGbRKlAUyOW.6HlPbnvYuK5hJU3g/xp1lkh4Mrvq.', 'john_johnson@gmail.com');
+('Peter', '$2y$12$t1iQr7DnYBeDxGbRKlAUyOW.6HlPbnvYuK5hJU3g/xp1lkh4Mrvq.', 'peter_parker@gmail.com'),
+('Mark', '$2y$12$t1iQr7DnYBeDxGbRKlAUyOW.6HlPbnvYuK5hJU3g/xp1lkh4Mrvq.', 'mark_hamill@gmail.com');
 
 insert into users_roles (user_id, role_id)
 values
 (1, 1),
 (2, 2);
 
-CREATE TABLE `products_table`
+CREATE TABLE `product_tbl`
 (
     `product_id` bigint(15)   NOT NULL AUTO_INCREMENT,
     `title_fld`  varchar(255) NOT NULL,
@@ -92,3 +67,26 @@ insert into products_table (title_fld, cost_fld) values ('Product 1', 100),
                                                         ('Product 18', 1800),
                                                         ('Product 19', 1900),
                                                         ('Product 20', 2000);
+
+create table orders (
+                        id                      bigint NOT NULL AUTO_INCREMENT,
+                        owner_id                bigint references users (id),
+                        price                   int,
+                        created_at              timestamp default current_timestamp,
+                        updated_at              timestamp default current_timestamp,
+                        address                  varchar(255),
+                        primary key(id)
+);
+
+create table order_items (
+                             id                      int  NOT NULL AUTO_INCREMENT,
+                             order_id                bigint references orders (id),
+                             product_id              bigint(15) references product_tbl (product_id),
+                             title                   varchar(255),
+                             quantity                int,
+                             price_per_product       int,
+                             price                   int,
+                             created_at              timestamp default current_timestamp,
+                             updated_at              timestamp default current_timestamp,
+                             primary key(id)
+);
