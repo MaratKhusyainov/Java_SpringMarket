@@ -22,17 +22,17 @@ public class CartController {
         cart.addToCart(id);
     }
     @GetMapping("/clear")
-    public void addToCArt(){
+    public void clearCart(){
         cart.clear();
     }
 
     @GetMapping("/change quantity/{p}/{i}")
-    public void addToCArt(@PathVariable int p,@PathVariable int i){
+    public void updateQuantity(@PathVariable int p,@PathVariable int i){
         cart.updateQuantity(p,i);
     }
 
     @GetMapping("/product/{p}")
-    public void addToCArt(@PathVariable int p){
+    public void deleteFromCart(@PathVariable int p){
         cart.deleteProduct(p);
     }
 }

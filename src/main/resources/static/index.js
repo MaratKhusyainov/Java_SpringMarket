@@ -1,10 +1,10 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8189/market/api/v1';
-
+    const contextPath = 'http://localhost:8189/market';
+    $scope.authorized = false;
 
     $scope.fillTable = function (pageIndex = 1) {
         $http({
-            url: contextPath + '/products',
+            url: contextPath + '/api/v1/products',
             method: 'GET',
             params: {
                 title: $scope.filter ? $scope.filter.title : null,
@@ -37,7 +37,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     }
 
     $scope.submitCreateNewProduct = function () {
-        $http.post(contextPath + '/products', $scope.newProduct)
+        $http.post(contextPath + '/api/v1/products', $scope.newProduct)
             .then(function (response) {
                 $scope.newProduct = null;
                 $scope.fillTable();
@@ -45,7 +45,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     };
 
     $scope.deleteProductById = function (productId) {
-        $http.delete(contextPath + '/products/' + productId)
+        $http.delete(contextPath + '/api/v1/products/' + productId)
             .then(function (response) {
                 $scope.fillTable();
             });
@@ -55,40 +55,73 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         let pos = $scope.Cart.items.map(function (e) {
             return e.productTitle;
         }).indexOf(title);
-        $http.get(contextPath + '/cart/product/' + pos)
+        $http.get(contextPath + '/api/v1/cart/product/' + pos)
             .then(function (response) {
                 $scope.showCart();
             });
     }
 
     $scope.addToCart = function (id) {
-        $http.get(contextPath + '/cart/add/' + id)
+        $http.get(contextPath + '/api/v1/cart/add/' + id)
+            .then(function (response) {
+                $scope.showCart();
+            });
+    }
+    $scope.saveOrder = function (username) {
+        if ($scope.authorized === false){
+            alert("Please sign in")
+        }else {
+            $http.get(contextPath + '/api/v1/order/' + username)
+                .then(function (response) {
+                    $scope.OrderItems = response.data;
+                    $scope.sumPrice($scope.OrderItems);
+                });
+        }
+    }
+
+    $scope.sumPrice= function (OrderItems){
+        for (var i = 0, sum = 0; i < OrderItems.length; ++i) {
+            sum += OrderItems[i].price;
+        }
+        $scope.sum = sum;
+    }
+
+    $scope.clearCart = function () {
+        $http.get(contextPath + '/api/v1/cart/clear')
             .then(function (response) {
                 $scope.showCart();
             });
     }
 
-    $scope.clearCart = function () {
-        $http.get(contextPath + '/cart/clear')
-            .then(function (response) {
-                $scope.showCart();
-            });
-    }
+
 
     $scope.updateQuantity = function (title, i) {
         let pos = $scope.Cart.items.map(function (e) {
             return e.productTitle;
         }).indexOf(title);
-        $http.get(contextPath + '/cart/change quantity/' + pos + '/' + i)
+        $http.get(contextPath + '/api/v1/cart/change_quantity/' + pos + '/' + i)
             .then(function (response) {
                 $scope.showCart();
             });
     };
 
     $scope.showCart = function () {
-        $http.get(contextPath + '/cart').then(function (response) {
+        $http.get(contextPath + '/api/v1/cart').then(function (response) {
             $scope.Cart = response.data;
         });
+    };
+
+    $scope.tryToAuth = function () {
+        $http.post(contextPath + '/auth', $scope.user)
+            .then(function successCallback(response) {
+                if (response.data.token) {
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+                    $scope.user.password = null;
+                    $scope.authorized = true;
+                }
+            }, function errorCallback(response) {
+                window.alert("Error");
+            });
     };
 
     $scope.showCart();
