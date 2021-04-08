@@ -24,6 +24,10 @@
                 templateUrl: 'order_confirmation/order_confirmation.html',
                 controller: 'orderConfirmationController'
             })
+            .when('/ws', {
+                templateUrl: 'productsSoap/productsSoap.html',
+                controller: 'productsSoapController'
+            })
             .when('/order_result/:orderId', {
                 templateUrl: 'order_result/order_result.html',
                 controller: 'orderResultController'

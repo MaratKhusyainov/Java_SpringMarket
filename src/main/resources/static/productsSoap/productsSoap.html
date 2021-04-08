@@ -1,0 +1,48 @@
+
+<form  >
+    <div class="form-group row">
+        <div class="form-group col-md-3">
+            <label for="filterId">Найти товар по ID</label>
+            <input class="form-control" type="number" ng-model="number" id="filterId">
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-success" ng-click="showProductsSoap()">Вывести список</button>
+    </div>
+</form>
+<br/>
+
+
+<table ng-show="ProductsPageSoap.length > 0" class="table table-hover" cellpadding="0" cellspacing="0">
+
+    <thead>
+    <tr>
+        <td>Название</td>
+        <td>Цена</td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="p in ProductsPageSoap">
+        <td>{{p.title.text}}</td>
+        <td>{{p.price.text}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<table ng-show="ProductSoap.title.text!=null" class="table table-hover" cellpadding="0" cellspacing="0">
+
+    <thead>
+    <tr>
+        <td>Название</td>
+        <td>Цена</td>
+        <td></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr >
+        <td>{{ProductSoap.title.text}}</td>
+        <td>{{ProductSoap.price.text}}</td>
+    </tr>
+    </tbody>
+</table>
