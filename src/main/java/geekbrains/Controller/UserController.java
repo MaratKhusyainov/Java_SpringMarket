@@ -19,8 +19,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody User user) {
-        if (userService.findByUsername(user.getUsername()).isPresent() ||
-                userService.findByEmail(user.getEmail()).isPresent()) {
+        if (userService.findByUsernameAndEmail(user.getUsername(),user.getEmail()).isPresent()){
             return new ResponseEntity<>(new MarketError(HttpStatus.CONFLICT.value(), "This user already exist"), HttpStatus.CONFLICT);
         } else {
             userService.saveUser(user);

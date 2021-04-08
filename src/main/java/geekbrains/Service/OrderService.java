@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,10 @@ public class OrderService {
 
     public List<Order> findAllOrdersByOwnerName(String username) {
         return orderRepository.findAllByOwnerUsername(username);
+    }
+
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
     }
 
 }
